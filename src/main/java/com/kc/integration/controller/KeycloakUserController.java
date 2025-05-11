@@ -54,4 +54,6 @@ public class KeycloakUserController {
         keycloakUserService.assignRoleToUser("your-realm", userId, roleName);
         return ResponseEntity.ok("Role assigned");
     }
+
+
 }

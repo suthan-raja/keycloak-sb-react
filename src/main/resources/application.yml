@@ -19,10 +19,10 @@ keycloak:
   use-resource-role-mappings: true
 
 
-#logging:
-#  level:
-#    org.springframework.security: DEBUG
-#    org.keycloak: DEBUG
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.keycloak: DEBUG
 
 keycloak-admin:
   username: admin

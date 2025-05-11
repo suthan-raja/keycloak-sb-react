@@ -30,7 +30,7 @@ public class AesEncryption {
         return new SecretKeySpec(SECRET_KEY.getBytes(), "AES");
     }*/
 
-    @SneakyThrows
+    /*@SneakyThrows
     public List<String> bulkEncrypt(List<String> plainValues) {
         return plainValues.parallelStream().map(AesEncryption::encrypt).collect(Collectors.toList());
     }
@@ -38,7 +38,7 @@ public class AesEncryption {
     @SneakyThrows
     public List<String> bulkDecrypt(List<String> encryptedValues) {
         return encryptedValues.parallelStream().map(AesEncryption::decrypt).collect(Collectors.toList());
-    }
+    }*/
 
 
     public String aesKeyGenerator() throws NoSuchAlgorithmException {

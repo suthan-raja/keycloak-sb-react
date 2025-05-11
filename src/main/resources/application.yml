@@ -1,0 +1,33 @@
+server:
+  port: 9200
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/keycloak
+    username: suthan
+    password: 2002
+
+keycloak:
+  realm: card-malawi-service
+  auth-server-url: http://localhost:8081
+  resource: springboot-client
+  credentials:
+    secret: U64zGOsM8tx5vGmD8oiMWApj66vaK2Qp
+  ssl-required: external
+  public-client: false
+  use-resource-role-mappings: true
+
+
+#logging:
+#  level:
+#    org.springframework.security: DEBUG
+#    org.keycloak: DEBUG
+
+keycloak-admin:
+  username: admin
+  password: admin
+  client-id: admin-cli
+
+
+

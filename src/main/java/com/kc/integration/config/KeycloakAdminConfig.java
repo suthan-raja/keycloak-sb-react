@@ -26,7 +26,7 @@ public class KeycloakAdminConfig {
     private String clientId;
 
     @Bean
-    public Keycloak keyCloakAdminClient(){
+    public Keycloak InitiateKeyCloak(){
         return KeycloakBuilder.builder()
                 .serverUrl(serverUrl)
                 .realm("master")
@@ -38,7 +38,7 @@ public class KeycloakAdminConfig {
     }
 
     @Bean
-    public String keycloakRealm(){
+    public String getRealm(){
         return realm;
     }
 }

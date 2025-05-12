@@ -2,8 +2,6 @@ package com.kc.integration.controller.k;
 
 import com.kc.integration.config.KeycloakAdminConfig;
 import com.kc.integration.dto.UserRequestDTO;
-import lombok.extern.slf4j.Slf4j;
-import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 //import org.keycloak.representations.account.UserRepresentation;
 import org.keycloak.admin.client.resource.RealmResource;
@@ -11,7 +9,6 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -71,10 +68,9 @@ public class KeyController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createUser(@RequestBody UserRequestDTO request) {
-        Keycloak keycloak = config.keyCloakAdminClient();
-        RealmResource realmResource = keycloak.realm(config.keycloakRealm());
+        Keycloak keycloak = config.InitiateKeyCloak();
+        RealmResource realmResource = keycloak.realm(config.getRealm());
 
-        // Step 1: Create the user
         UserRepresentation user = new UserRepresentation();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
@@ -82,7 +78,6 @@ public class KeyController {
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
 
-        // Create user
         Response response = realmResource.users().create(user);
 
         if (response.getStatus() != 201) {
@@ -119,27 +114,27 @@ public class KeyController {
 
     @GetMapping
     public List<UserRepresentation> getAllUsers() {
-        Keycloak keycloak = config.keyCloakAdminClient();
-        return keycloak.realm(config.keycloakRealm()).users().list();
+        Keycloak keycloak = config.InitiateKeyCloak();
+        return keycloak.realm(config.getRealm()).users().list();
     }
 
     @GetMapping("/{userId}")
     public UserRepresentation getUser(@PathVariable String userId) {
-        Keycloak keycloak = config.keyCloakAdminClient();
-        return keycloak.realm(config.keycloakRealm()).users().get(userId).toRepresentation();
+        Keycloak keycloak = config.InitiateKeyCloak();
+        return keycloak.realm(config.getRealm()).users().get(userId).toRepresentation();
     }
 
     @PutMapping("/{userId}")
     public ResponseEntity<String> updateUser(@PathVariable String userId, @RequestBody UserRepresentation user) {
-        Keycloak keycloak = config.keyCloakAdminClient();
-        keycloak.realm(config.keycloakRealm()).users().get(userId).update(user);
+        Keycloak keycloak = config.InitiateKeyCloak();
+        keycloak.realm(config.getRealm()).users().get(userId).update(user);
         return ResponseEntity.ok("User updated");
     }
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable String userId) {
-        Keycloak keycloak = config.keyCloakAdminClient();
-        keycloak.realm(config.keycloakRealm()).users().get(userId).remove();
+        Keycloak keycloak = config.InitiateKeyCloak();
+        keycloak.realm(config.getRealm()).users().get(userId).remove();
         return ResponseEntity.ok("User deleted");
     }
 }

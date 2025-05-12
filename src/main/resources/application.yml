@@ -4,20 +4,23 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/keycloak
-    username: suthan
-    password: 2002
+#    url: jdbc:postgresql://localhost:5432/keycloak
+#    username: suthan
+#    password: 2002
+    url: jdbc:postgresql://192.168.1.57:5432/msp
+    username: postgres
+    password: YJEJZbXMMbiDWSEconeCnA
 
 keycloak:
   realm: card-malawi-service
   auth-server-url: http://localhost:8081
   resource: springboot-client
   credentials:
-    secret: U64zGOsM8tx5vGmD8oiMWApj66vaK2Qp
+#    secret: U64zGOsM8tx5vGmD8oiMWApj66vaK2Qp
+    secret: 56EH6gnVzRU9nLhiLVemfy0cXeTC0A3Z
   ssl-required: external
   public-client: false
   use-resource-role-mappings: true
-
 
 logging:
   level:

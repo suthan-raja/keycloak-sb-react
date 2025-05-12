@@ -20,30 +20,30 @@ public class KeycloakRoleController {
 
     @PostMapping
     public ResponseEntity<String> createRole(@RequestBody RoleRepresentation role) {
-        Keycloak keycloak = config.keyCloakAdminClient();
-        keycloak.realm(config.keycloakRealm()).roles().create(role);
+        Keycloak keycloak = config.InitiateKeyCloak();
+        keycloak.realm(config.getRealm()).roles().create(role);
         return ResponseEntity.ok("Role Created");
     }
 
     @GetMapping
     public List<RoleRepresentation> getRoles() {
-        Keycloak keycloak = config.keyCloakAdminClient();
-        return keycloak.realm(config.keycloakRealm()).roles().list();
+        Keycloak keycloak = config.InitiateKeyCloak();
+        return keycloak.realm(config.getRealm()).roles().list();
     }
 
     @PostMapping("/{userId}/assign")
     public ResponseEntity<String> assignRole(@PathVariable String userId, @RequestParam String roleName) {
-        Keycloak keycloak = config.keyCloakAdminClient();
-        RoleRepresentation role = keycloak.realm(config.keycloakRealm()).roles().get(roleName).toRepresentation();
-        keycloak.realm(config.keycloakRealm()).users().get(userId).roles().realmLevel().add(List.of(role));
+        Keycloak keycloak = config.InitiateKeyCloak();
+        RoleRepresentation role = keycloak.realm(config.getRealm()).roles().get(roleName).toRepresentation();
+        keycloak.realm(config.getRealm()).users().get(userId).roles().realmLevel().add(List.of(role));
         return ResponseEntity.ok("Role assigned to user");
     }
 
     @PostMapping("/{userId}/remove")
     public ResponseEntity<String> removeRole(@PathVariable String userId, @RequestParam String roleName) {
-        Keycloak keycloak = config.keyCloakAdminClient();
-        RoleRepresentation role = keycloak.realm(config.keycloakRealm()).roles().get(roleName).toRepresentation();
-        keycloak.realm(config.keycloakRealm()).users().get(userId).roles().realmLevel().remove(List.of(role));
+        Keycloak keycloak = config.InitiateKeyCloak();
+        RoleRepresentation role = keycloak.realm(config.getRealm()).roles().get(roleName).toRepresentation();
+        keycloak.realm(config.getRealm()).users().get(userId).roles().realmLevel().remove(List.of(role));
         return ResponseEntity.ok("Role removed from user");
     }
 
@@ -55,8 +55,8 @@ public class KeycloakRoleController {
 
     @GetMapping("/get-roles/{userId}")
     public ResponseEntity<List<String>> getRolesByUserId(@PathVariable String userId) {
-        Keycloak keycloak = config.keyCloakAdminClient();
-        RealmResource realm = keycloak.realm(config.keycloakRealm());
+        Keycloak keycloak = config.InitiateKeyCloak();
+        RealmResource realm = keycloak.realm(config.getRealm());
 
         // Get the list of roles assigned to the user
         List<RoleRepresentation> roles = realm.users().get(userId).roles().realmLevel().listAll();
@@ -70,8 +70,8 @@ public class KeycloakRoleController {
 
     @GetMapping("/get-user-roles/{userId}")
     public ResponseEntity<List<String>> getUserRoles(@PathVariable String userId) {
-        Keycloak keycloak = config.keyCloakAdminClient();
-        RealmResource realm = keycloak.realm(config.keycloakRealm());
+        Keycloak keycloak = config.InitiateKeyCloak();
+        RealmResource realm = keycloak.realm(config.getRealm());
 
         // Get user roles from the realm
         List<RoleRepresentation> roles = realm.users().get(userId).roles().realmLevel().listAll();

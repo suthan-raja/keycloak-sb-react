@@ -1,5 +1,7 @@
 package com.kc.integration.service;
 
+import com.kc.integration.model.UserDetails;
+import com.kc.integration.repository.UserDetailsRepo;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
@@ -16,10 +18,17 @@ public class KeyCloakService {
 
     private final Keycloak keycloak;
     private final String realm;
+    private final UserDetailsRepo userDetailsRepo;
 
-    public KeyCloakService(Keycloak keycloak, String realm) {
+    public KeyCloakService(Keycloak keycloak, String realm, UserDetailsRepo userDetailsRepo) {
         this.keycloak = keycloak;
         this.realm = realm;
+        this.userDetailsRepo = userDetailsRepo;
+    }
+
+    public List<UserDetails> getUserNameList(){
+        return userDetailsRepo.findAll();
+//        return userDetailsList.stream().map(UserDetails::getFirstnameEn).collect(Collectors.toList());
     }
 
     public void createUser(String userName, String email, String password){

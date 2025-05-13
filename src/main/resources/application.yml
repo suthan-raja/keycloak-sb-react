@@ -7,7 +7,7 @@ spring:
 #    url: jdbc:postgresql://localhost:5432/keycloak
 #    username: suthan
 #    password: 2002
-    url: jdbc:postgresql://192.168.1.57:5432/msp
+    url: jdbc:postgresql://192.168.1.57:5432/malawi_IMS_V1
     username: postgres
     password: YJEJZbXMMbiDWSEconeCnA
 

@@ -2,13 +2,18 @@ package com.kc.integration.controller;
 
 import com.kc.integration.dto.KeycloakTokenResponse;
 import com.kc.integration.dto.LoginRequest;
+import com.kc.integration.model.UserDetails;
+import com.kc.integration.service.KeyCloakService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 public class KeyCloakController {
@@ -24,6 +29,12 @@ public class KeyCloakController {
 
     @Value("${keycloak.credentials.secret}")
     private String clientSecret;
+
+    private final KeyCloakService keyCloakService;
+
+    public KeyCloakController(KeyCloakService keyCloakService) {
+        this.keyCloakService = keyCloakService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<KeycloakTokenResponse> login(@RequestBody LoginRequest request) {
@@ -47,6 +58,12 @@ public class KeyCloakController {
         );
 
         return ResponseEntity.ok(response.getBody());
+    }
+
+    @PreAuthorize("hasRole('user-manager')")
+    @GetMapping("get-user-db")
+    public List<String> getUsers(){
+        return keyCloakService.getUserNameList().stream().map(UserDetails::getFirstnameEn).collect(Collectors.toList());
     }
 
     private HttpEntity<String> getStringHttpEntity(LoginRequest request, HttpHeaders headers) {

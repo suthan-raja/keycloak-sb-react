@@ -18,8 +18,12 @@ public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
         super.configure(http);
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/**").permitAll()
-                .anyRequest().authenticated();
+                .antMatchers("/get-user-db").hasRole("user-manager")
+                .antMatchers("/login").permitAll()
+                .anyRequest().authenticated()
+               /* .and()
+                .oauth2ResourceServer()
+                .jwt()*/;
     }
 
     @Bean

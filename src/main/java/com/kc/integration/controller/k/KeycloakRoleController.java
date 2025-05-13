@@ -1,6 +1,7 @@
 package com.kc.integration.controller.k;
 
 import com.kc.integration.config.KeycloakAdminConfig;
+import com.kc.integration.controller.KeyCloakController;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
@@ -18,25 +19,29 @@ import java.util.stream.Collectors;
 @Slf4j
 public class KeycloakRoleController {
 
-    @Autowired
     private KeycloakAdminConfig config;
+
+    @Autowired
+    public KeycloakRoleController(KeycloakAdminConfig config){
+        this.config = config;
+    }
 
     @PostMapping
     public ResponseEntity<String> createRole(@RequestBody RoleRepresentation role) {
         Keycloak keycloak = config.InitiateKeyCloak();
         String realmName = config.getRealm();
-        log.info("Realm Name : {}" , realmName);
-        try{
+        log.info("Realm Name : {}", realmName);
+        try {
             List<RoleRepresentation> existingRoles = keycloak.realm(realmName).roles().list();
             boolean roleExists = existingRoles.stream().anyMatch(r -> r.getName().equals(role.getName()));
             if (roleExists) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body("Role already exists: " + role.getName());
-            }else{
+            } else {
                 keycloak.realm(realmName).roles().create(role);
                 return ResponseEntity.ok("Role created: " + role.getName());
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error while creating role: " + e.getMessage());
         }

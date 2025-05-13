@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/keycloak/users")
 //@Slf4j
-public class KeyController {
+public class KeyUserController {
 
     @Autowired
     private KeycloakAdminConfig config;
@@ -95,7 +95,7 @@ public class KeyController {
 
         realmResource.users().get(userId).resetPassword(password);
 
-        System.out.println("Roles : {}"+request.getRoles());
+        System.out.println("Roles : {}" + request.getRoles());
 
         // Step 4: Assign roles (if any)
         if (request.getRoles() != null && !request.getRoles().isEmpty()) {
@@ -108,8 +108,6 @@ public class KeyController {
 
         return ResponseEntity.status(201).body("User created and roles assigned");
     }
-
-
 
 
     @GetMapping

@@ -8,11 +8,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/keycloak/users")
-public class KeycloakUserController {
+public class KeycloakUserControllerOld {
 
     private final KeyCloakService keycloakUserService;
 
-    public KeycloakUserController(KeyCloakService keycloakUserService) {
+    public KeycloakUserControllerOld(KeyCloakService keycloakUserService) {
         this.keycloakUserService = keycloakUserService;
     }
 

@@ -66,6 +66,12 @@ public class KeyCloakController {
         return keyCloakService.getUserNameList().stream().map(UserDetails::getFirstnameEn).collect(Collectors.toList());
     }
 
+    @PreAuthorize("hasRole('admin')")
+    @GetMapping("admin")
+    public String getAdminAccess(){
+        return "I am admin";
+    }
+
     private HttpEntity<String> getStringHttpEntity(LoginRequest request, HttpHeaders headers) {
         Map<String, String> bodyMap = new LinkedHashMap<>();
         bodyMap.put("grant_type", "password");

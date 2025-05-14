@@ -22,7 +22,7 @@ public class KeycloakRoleController {
     private KeycloakAdminConfig config;
 
     @Autowired
-    public KeycloakRoleController(KeycloakAdminConfig config){
+    public KeycloakRoleController(KeycloakAdminConfig config) {
         this.config = config;
     }
 
@@ -60,6 +60,43 @@ public class KeycloakRoleController {
         keycloak.realm(config.getRealm()).users().get(userId).roles().realmLevel().add(List.of(role));
         return ResponseEntity.ok("Role assigned to user");
     }
+
+    @PostMapping("/{userId}/assign-client-role")
+    public ResponseEntity<String> assignRoleClientRole(@PathVariable String userId,
+                                                       @RequestParam String clientId,
+                                                       @RequestParam String roleName) {
+        Keycloak keycloak = config.InitiateKeyCloak();
+        String realmName = config.getRealm();
+
+        String clientUUID = keycloak.realm(realmName).clients().findByClientId(clientId).get(0).getId();
+
+        RoleRepresentation clientRole = keycloak.realm(realmName)
+                .clients().get(clientUUID)
+                .roles().get(roleName)
+                .toRepresentation();
+
+        keycloak.realm(realmName).users().get(userId).roles().clientLevel(clientUUID).add(List.of(clientRole));
+
+        return ResponseEntity.ok("Role assigned client role");
+
+    }
+
+    @GetMapping("/client-roles/{userId}")
+    public ResponseEntity<List<String>> getClientRoles(@PathVariable String userId,
+                                                       @RequestParam String clientId) {
+        Keycloak keycloak = config.InitiateKeyCloak();
+        String realm = config.getRealm();
+
+        String clientUUID = keycloak.realm(realm).clients().findByClientId(clientId).get(0).getId();
+
+        List<RoleRepresentation> roles = keycloak.realm(realm).users()
+                .get(userId).roles().clientLevel(clientUUID).listAll();
+
+        List<String> roleNames = roles.stream().map(RoleRepresentation::getName).collect(Collectors.toList());
+
+        return ResponseEntity.ok(roleNames);
+    }
+
 
     @PostMapping("/{userId}/remove")
     public ResponseEntity<String> removeRole(@PathVariable String userId, @RequestParam String roleName) {
@@ -102,5 +139,86 @@ public class KeycloakRoleController {
 
         return ResponseEntity.ok(roleNames);
     }
+
+    @PostMapping("/create-client-role")
+    public ResponseEntity<String> createClientRole(@RequestParam String clientId,
+                                                   @RequestParam String roleName) {
+        try {
+            Keycloak keycloak = config.InitiateKeyCloak();
+            String realmName = config.getRealm();
+
+            String clientUUId = keycloak.realm(realmName).clients().findByClientId(clientId).get(0).getId();
+
+            List<RoleRepresentation> clientRoles = keycloak.realm(realmName).clients().get(clientUUId).roles().list();
+
+            boolean exists = clientRoles.stream().anyMatch(role -> role.getName().equals(roleName));
+
+            if (exists) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("Client role already exists: " + roleName);
+            }
+
+            RoleRepresentation role = new RoleRepresentation();
+            role.setName(roleName);
+            keycloak.realm(realmName).clients().get(clientUUId).roles().create(role);
+
+            return ResponseEntity.ok("Client role created: " + roleName);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error creating client role: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/client-roles-list")
+    public ResponseEntity<List<String>> getCreatedClientRoles(@RequestParam String clientId) {
+        try {
+            Keycloak keycloak = config.InitiateKeyCloak();
+            String realmName = config.getRealm();
+
+            String clientUUID = keycloak.realm(realmName)
+                    .clients().findByClientId(clientId).get(0).getId();
+
+            List<RoleRepresentation> roles = keycloak.realm(realmName)
+                    .clients().get(clientUUID).roles().list();
+
+            List<String> roleNames = roles.stream()
+                    .map(RoleRepresentation::getName)
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(roleNames);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(List.of("Error: " + e.getMessage()));
+        }
+    }
+
+
+    @PostMapping("/{userId}/remove-client-role")
+    public ResponseEntity<String> removeClientRole(@PathVariable String userId,
+                                                   @RequestParam String clientId,
+                                                   @RequestParam String roleName) {
+        try {
+            Keycloak keycloak = config.InitiateKeyCloak();
+            String realmName = config.getRealm();
+
+            String clientUUID = keycloak.realm(realmName)
+                    .clients().findByClientId(clientId).get(0).getId();
+
+            RoleRepresentation role = keycloak.realm(realmName)
+                    .clients().get(clientUUID)
+                    .roles().get(roleName)
+                    .toRepresentation();
+
+            keycloak.realm(realmName).users()
+                    .get(userId).roles()
+                    .clientLevel(clientUUID).remove(List.of(role));
+
+            return ResponseEntity.ok("Client role removed from user");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error removing client role: " + e.getMessage());
+        }
+    }
+
 
 }

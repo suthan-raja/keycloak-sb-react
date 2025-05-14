@@ -22,6 +22,7 @@ keycloak:
   public-client: false
   use-resource-role-mappings: true
 
+
 #logging:
 #  level:
 #    org.springframework.security: DEBUG
@@ -32,5 +33,9 @@ keycloak-admin:
   password: admin
   client-id: admin-cli
 
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.keycloak: DEBUG
 
 

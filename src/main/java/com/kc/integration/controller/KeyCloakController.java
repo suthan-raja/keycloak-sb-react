@@ -84,7 +84,6 @@ public class KeyCloakController {
         bodyMap.forEach((key, value) -> bodyBuilder.append(key).append("=").append(value).append("&"));
         String body = bodyBuilder.substring(0, bodyBuilder.length() - 1);
 
-        HttpEntity<String> entity = new HttpEntity<>(body, headers);
-        return entity;
+        return new HttpEntity<>(body, headers);
     }
 }

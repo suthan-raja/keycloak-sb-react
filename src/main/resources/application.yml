@@ -11,16 +11,29 @@ spring:
     username: postgres
     password: YJEJZbXMMbiDWSEconeCnA
 
+#keycloak:
+#  realm: card-malawi-service
+#  auth-server-url: http://localhost:8081
+#  resource: springboot-client
+#  credentials:
+##    secret: U64zGOsM8tx5vGmD8oiMWApj66vaK2Qp
+#    secret: 56EH6gnVzRU9nLhiLVemfy0cXeTC0A3Z
+#  ssl-required: external
+#  public-client: false
+#  use-resource-role-mappings: true
+
+
+
 keycloak:
   realm: card-malawi-service
-  auth-server-url: http://localhost:8081
+  auth-server-url: https://keycloak-default.apps.uat.mspsandbox.com/auth
   resource: springboot-client
   credentials:
-#    secret: U64zGOsM8tx5vGmD8oiMWApj66vaK2Qp
-    secret: 56EH6gnVzRU9nLhiLVemfy0cXeTC0A3Z
+    secret: wPbL9enUQJVKX1ogMDvUoOCG5yLFM7uB
   ssl-required: external
   public-client: false
   use-resource-role-mappings: true
+
 
 
 #logging:

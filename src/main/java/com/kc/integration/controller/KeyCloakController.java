@@ -4,12 +4,15 @@ import com.kc.integration.dto.KeycloakTokenResponse;
 import com.kc.integration.dto.LoginRequest;
 import com.kc.integration.model.UserDetails;
 import com.kc.integration.service.KeyCloakService;
+import com.kc.integration.utils.SSLUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,14 +40,14 @@ public class KeyCloakController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<KeycloakTokenResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<KeycloakTokenResponse> login(@RequestBody LoginRequest request) throws NoSuchAlgorithmException, KeyManagementException {
 
         System.out.println(request);
 
         String tokenUrl = keycloakBaseUrl + "/realms/" + realm + "/protocol/openid-connect/token";
-
-        RestTemplate restTemplate = new RestTemplate();
-
+//        String tokenUrl = "https://keycloak-default.apps.uat.mspsandbox.com/auth/realms/card-malawi-service/protocol/openid-connect/token";
+//        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = SSLUtils.sslOffedRestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -62,13 +65,13 @@ public class KeyCloakController {
 
     @PreAuthorize("hasRole('user-manager')")
     @GetMapping("get-user-db")
-    public List<String> getUsers(){
+    public List<String> getUsers() {
         return keyCloakService.getUserNameList().stream().map(UserDetails::getFirstnameEn).collect(Collectors.toList());
     }
 
     @PreAuthorize("hasRole('admin')")
     @GetMapping("admin")
-    public String getAdminAccess(){
+    public String getAdminAccess() {
         return "I am admin";
     }
 

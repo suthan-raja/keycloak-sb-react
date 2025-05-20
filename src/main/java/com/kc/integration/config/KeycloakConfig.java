@@ -38,7 +38,7 @@ public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
         super.configure(http);
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/login").permitAll()
+                .antMatchers(HttpMethod.POST,"/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/keycloak/roles/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/keycloak/roles/**").permitAll()
 //                .antMatchers("/get-user-db").hasRole("user-manager")
